@@ -4,6 +4,7 @@ import (
 	"github.com/litesoft-go/utils/codec"
 )
 
+//noinspection GoUnusedExportedFunction
 func GetOpaqueField(curOpaque, key string) (value string, err error) {
 	var keyValues map[string]string
 	if (curOpaque != "") && (key != "") {
@@ -13,6 +14,7 @@ func GetOpaqueField(curOpaque, key string) (value string, err error) {
 	return
 }
 
+//noinspection GoUnusedExportedFunction
 func UpdateOpaqueField(curOpaque, key, newValue string, setter func(string)) (updated bool, err error) {
 	if key == "" {
 		return false, nil

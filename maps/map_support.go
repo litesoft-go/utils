@@ -16,6 +16,7 @@ func CopyStrings(src, dst map[string]string) map[string]string {
 	return copyStrings(src, NonNilStrings(dst))
 }
 
+//noinspection GoUnusedExportedFunction
 func NilableCopyStrings(src map[string]string) map[string]string {
 	if src == nil {
 		return nil

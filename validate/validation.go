@@ -7,6 +7,7 @@ import (
 	"github.com/litesoft-go/utils/paths"
 )
 
+//noinspection GoUnusedExportedFunction
 func Children(path *paths.Path, validatableFunctions ...func(*paths.Path) error) (err error) {
 	for _, vf := range validatableFunctions {
 		err = vf(path)
@@ -28,6 +29,7 @@ func OptionalInt32NotNegative(path *paths.Path, pathLeg string, currentValue *in
 	return nil
 }
 
+//noinspection GoUnusedExportedFunction
 func OptionalInt64NotNegative(path *paths.Path, pathLeg string, currentValue *int64) error {
 	if currentValue != nil {
 		value := *currentValue
@@ -38,6 +40,7 @@ func OptionalInt64NotNegative(path *paths.Path, pathLeg string, currentValue *in
 	return nil
 }
 
+//noinspection GoUnusedExportedFunction
 func OptionalNoLTWS(path *paths.Path, pathLeg, currentValue string) error {
 	if (currentValue != "") && (strings.TrimSpace(currentValue) == "") {
 		return path.LeadingTrailingWhitespace(pathLeg, currentValue)
@@ -45,6 +48,7 @@ func OptionalNoLTWS(path *paths.Path, pathLeg, currentValue string) error {
 	return nil
 }
 
+//noinspection GoUnusedExportedFunction
 func RequiredNoLTWS(path *paths.Path, pathLeg, currentValue string) error {
 	if currentValue == "" {
 		return path.Missing(pathLeg, currentValue)
@@ -55,6 +59,7 @@ func RequiredNoLTWS(path *paths.Path, pathLeg, currentValue string) error {
 	return nil
 }
 
+//noinspection GoUnusedExportedFunction
 func RequiredOneOf(path *paths.Path, pathLeg string, currentValue interface{}, acceptableValues ...interface{}) error {
 	why := "nothing is acceptable"
 	if len(acceptableValues) != 0 {
@@ -69,6 +74,7 @@ func RequiredOneOf(path *paths.Path, pathLeg string, currentValue interface{}, a
 		ErrorOf(why, currentValue)
 }
 
+//noinspection GoUnusedExportedFunction
 func StringKeys(path *paths.Path, stringsMap map[string]string) (err error) {
 	for k := range stringsMap {
 		err = checkMapKey(path, k)
@@ -79,6 +85,7 @@ func StringKeys(path *paths.Path, stringsMap map[string]string) (err error) {
 	return
 }
 
+//noinspection GoUnusedExportedFunction
 func MapStrings(path *paths.Path, stringsMap map[string]string) (err error) {
 	for k, v := range stringsMap {
 		err = checkMapKey(path, k)

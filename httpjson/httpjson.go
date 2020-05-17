@@ -56,6 +56,7 @@ func (r *RequestResponse) IndentString(prefix string, ib *strs.IndentedBuilder) 
 // It returns the responses status code (or -1 if unavailable),
 // the response data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
+//noinspection GoUnusedExportedFunction
 func Get(url string) *RequestResponse {
 	provider := &getResponseProvider{}
 	return handle(url, provider.get, "get")
@@ -65,6 +66,7 @@ func Get(url string) *RequestResponse {
 // It returns the responses status code (or -1 if unavailable),
 // the response data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
+//noinspection GoUnusedExportedFunction
 func Post(url, postBody string) *RequestResponse {
 	provider := &postResponseProvider{postBody: postBody}
 	return handle(url, provider.post, "post")

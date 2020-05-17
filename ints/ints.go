@@ -27,14 +27,17 @@ func ToA(src int) string {
 	return strconv.Itoa(src)
 }
 
+//noinspection GoUnusedExportedFunction
 func Min(src1, src2 int) int {
 	return Tertiary(src1 < src2, src1, src2)
 }
 
+//noinspection GoUnusedExportedFunction
 func Max(src1, src2 int) int {
 	return Tertiary(src1 > src2, src1, src2)
 }
 
+//noinspection GoUnusedExportedFunction
 func IsOneOf(check int, acceptables ...int) bool {
 	for _, acceptable := range acceptables {
 		if check == acceptable {

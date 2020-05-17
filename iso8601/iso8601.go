@@ -19,6 +19,7 @@ func ZmillisToString(pTime *time.Time) string {
 	return pTime.UTC().Format(Format)
 }
 
+//noinspection GoUnusedExportedFunction
 func ZmillisNow() string {
 	return ZmillisToString(nil)
 }

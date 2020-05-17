@@ -9,6 +9,7 @@ func OrEmpty(in string) string {
 	return strings.TrimSpace(in)
 }
 
+//noinspection GoUnusedExportedFunction
 func Or(in, p2nd string, pOrs ...string) (rv string) {
 	rv = OrEmpty(in)
 	if rv == "" {

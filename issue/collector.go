@@ -10,6 +10,7 @@ type Collector struct {
 	sourceTypesByIssue map[string]*issueSourceTypeMap
 }
 
+//noinspection GoUnusedExportedFunction
 func NewSourceReference(ref string) SourceReference {
 	return &baseSR{ref: ref}
 }

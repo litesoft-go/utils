@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+//noinspection GoUnusedExportedFunction
 func NewClient(timeoutSeconds int) *http.Client {
 	if timeoutSeconds < 1 {
 		panic("Attempt to create a New http.Client with timeouts of: " + strconv.Itoa(timeoutSeconds))

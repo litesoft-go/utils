@@ -8,6 +8,7 @@ import (
 var registry = make(map[string]Codec, 1)
 var defaultEncoder string
 
+//noinspection GoUnusedExportedFunction
 func SetDefaultEncoder(id string) {
 	defaultEncoder = id
 }
