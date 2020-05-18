@@ -1,6 +1,9 @@
 package iso8601
 
-import "time"
+import (
+	"time"
+	// standard libs only above!
+)
 
 const Format = "2006-01-02T15:04:05.000Z07"
 

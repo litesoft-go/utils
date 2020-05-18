@@ -1,6 +1,9 @@
 package paths
 
-import "fmt"
+import (
+	"fmt"
+	// standard libs only above!
+)
 
 type Path struct {
 	parent *Path

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	// standard libs only above!
 )
 
 type IndentStringer interface {

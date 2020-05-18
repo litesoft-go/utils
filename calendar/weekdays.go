@@ -1,9 +1,12 @@
 package calendar
 
 import (
+	"strings"
+
+	// standard libs only above!
+
 	"github.com/litesoft-go/utils/enums"
 	"github.com/litesoft-go/utils/strs"
-	"strings"
 )
 
 type Weekday struct {

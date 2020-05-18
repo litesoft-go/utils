@@ -3,6 +3,7 @@ package codec
 import (
 	"errors"
 	"strings"
+	// standard libs only above!
 )
 
 var id = ID_ASCI

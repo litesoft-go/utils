@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	// standard libs only above!
+
 	"github.com/litesoft-go/utils/enums"
 )
 
@@ -27,10 +29,6 @@ func TestRegistered(t *testing.T) {
 			return
 		}
 	}
-	//	t.Errorf("Not Equal:\n"+
-	//		"   expected: %v\n"+
-	//		"     actual: %v\n", One, actual)
-	//  return
 }
 
 type Carrier struct {

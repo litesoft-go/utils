@@ -2,6 +2,7 @@ package iso8601
 
 import (
 	"testing"
+	// standard libs only above!
 )
 
 func TestEmptyStringParse(t *testing.T) {

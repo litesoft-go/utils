@@ -1,6 +1,8 @@
 package opaquestrings
 
 import (
+	// standard libs only above!
+
 	"github.com/litesoft-go/utils/codec"
 )
 

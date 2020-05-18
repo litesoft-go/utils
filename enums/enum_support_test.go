@@ -2,7 +2,9 @@ package enums
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
+	// standard libs only above!
 )
 
 type PrimeEnum struct {
@@ -51,23 +53,43 @@ type Carrier struct {
 }
 
 func TestJson(t *testing.T) {
-	c1 := &Carrier{Name: "Fred", Prime: &Two}
 
-	data, err := json.Marshal(c1)
+	wilma := &Carrier{Name: "Wilma", Prime: &One}
+
+	err := roundTrip(wilma)
+
 	if err != nil {
-		t.Errorf("c1: %w", err)
+		t.Errorf("Wilma: %w", err)
 		return
 	}
 
-	c2 := &Carrier{}
-	err = json.Unmarshal(data, c2)
+	fred := &Carrier{Name: "Fred"}
+
+	err = roundTrip(fred)
+
 	if err != nil {
-		t.Errorf("c2: %w", err)
+		t.Errorf("Fred: %w", err)
 		return
 	}
-	if (c1.Name != c2.Name) || (c1.Prime == nil) || (c2.Prime == nil) || (*c1.Prime != *c2.Prime) {
-		t.Errorf("Not Equal:\n"+
-			"  c1: %v\n"+
-			"  c2: %v\n", c1, c2)
+}
+
+func roundTrip(in *Carrier) error {
+	data, err := json.Marshal(in)
+	if err != nil {
+		return fmt.Errorf("in: %w", err)
 	}
+
+	out := &Carrier{}
+	err = json.Unmarshal(data, out)
+	if err != nil {
+		return fmt.Errorf("out: %w", err)
+	}
+
+	if (in.Name != out.Name) || !AreSame(in.Prime, out.Prime) {
+		err = fmt.Errorf("Not Equal:\n"+
+			"   in: %v\n"+
+			"  out: %v\n", in, out)
+	}
+
+	return err
 }

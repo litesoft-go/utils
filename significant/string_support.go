@@ -1,6 +1,9 @@
 package significant
 
-import "strings"
+import (
+	"strings"
+	// standard libs only above!
+)
 
 func OrEmpty(in string) string {
 	if in == "" {

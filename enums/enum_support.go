@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+
+	// standard libs only above!
+
+	"github.com/litesoft-go/utils/interfaces"
 )
 
 // ComparisonTransformer transforms keys, Enum Name(s) and Aliases, to be able to match on
@@ -37,6 +41,15 @@ func (in *Enum) GetUnmarshalledValue() string {
 
 func (in *Enum) IsDefault() bool {
 	return in.isDefault
+}
+
+func (in *Enum) Is(them ...IEnum) bool {
+	for i := range them {
+		if AreSame(in, them[i]) {
+			return true
+		}
+	}
+	return false
 }
 
 func (in *Enum) String() (str string) {
@@ -83,13 +96,11 @@ func (in *Enum) isEmpty() bool {
 	return (in.getTypeName() == "") && (in.Name() == "") && (in.GetUnmarshalledValue() == "")
 }
 
-type IEnum interface {
+type justEnum interface {
 	Name() string
 	GetUnmarshalledValue() string
 	IsDefault() bool
 	String() string
-
-	UpdateFrom(found IEnum)
 
 	setName(string)
 	setUnmarshalledValue(string)
@@ -97,6 +108,22 @@ type IEnum interface {
 	setTypeName(string)
 	setDefault()
 	isEmpty() bool
+}
+
+type IEnum interface {
+	justEnum
+
+	UpdateFrom(found IEnum)
+}
+
+func AreSame(e1, e2 justEnum) (same bool) {
+	nil1, nil2 := interfaces.IsNil(e1), interfaces.IsNil(e2)
+	if nil1 {
+		same = nil2
+	} else if !nil2 {
+		same = (e1.getTypeName() == e2.getTypeName()) && (e1.Name() == e2.Name())
+	}
+	return
 }
 
 func UnmarshalJSON(in IEnum, data []byte) error {
