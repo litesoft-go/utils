@@ -1,29 +1,29 @@
 package int32s
 
-func FromInt(src uint) int32 {
+func FromInt(src int) int32 {
 	return int32(src)
 }
 
 //noinspection GoUnusedExportedFunction
-func OptionalFromInt(src uint) *int32 {
+func OptionalFromInt(src int) *int32 {
 	return optional(FromInt(src))
 }
 
-func FromInt8(src uint8) int32 {
+func FromInt8(src int8) int32 {
 	return int32(src)
 }
 
 //noinspection GoUnusedExportedFunction
-func OptionalFromInt8(src uint8) *int32 {
+func OptionalFromInt8(src int8) *int32 {
 	return optional(FromInt8(src))
 }
 
-func FromInt16(src uint16) int32 {
+func FromInt16(src int16) int32 {
 	return int32(src)
 }
 
 //noinspection GoUnusedExportedFunction
-func OptionalFromInt16(src uint16) *int32 {
+func OptionalFromInt16(src int16) *int32 {
 	return optional(FromInt16(src))
 }
 
@@ -32,16 +32,16 @@ func OptionalFromInt16(src uint16) *int32 {
 //}
 //
 ////noinspection GoUnusedExportedFunction
-//func OptionalFromInt32(src uint32) *int32 {
+//func OptionalFromInt32(src int32) *int32 {
 //	return optional(FromInt32(src))
 //}
 
-func FromInt64(src uint64) int32 {
+func FromInt64(src int64) int32 {
 	return int32(src)
 }
 
 //noinspection GoUnusedExportedFunction
-func OptionalFromInt64(src uint64) *int32 {
+func OptionalFromInt64(src int64) *int32 {
 	return optional(FromInt64(src))
 }
 

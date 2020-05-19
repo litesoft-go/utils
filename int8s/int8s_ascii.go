@@ -1,4 +1,4 @@
-package int32s
+package int8s
 
 import (
 	// standard libs only above!
@@ -6,21 +6,21 @@ import (
 	"github.com/litesoft-go/utils/ints"
 )
 
-func OptionalFromA(src string) (value *int32, err error) {
+func OptionalFromA(src string) (value *int8, err error) {
 	if src == "" {
 		return
 	}
 	var pValue *int
 	pValue, err = ints.OptionalFromA(src)
 	if (err == nil) && (pValue != nil) {
-		value = optional(int32(*pValue))
+		value = optional(int8(*pValue))
 	}
 	return
 }
 
 //noinspection GoUnusedExportedFunction
-func FromA(src string) (value int32, err error) {
-	var pValue *int32
+func FromA(src string) (value int8, err error) {
+	var pValue *int8
 	pValue, err = OptionalFromA(src)
 	if err == nil {
 		value = *pValue
@@ -28,11 +28,11 @@ func FromA(src string) (value int32, err error) {
 	return
 }
 
-func ToA(src int32) string {
+func ToA(src int8) string {
 	return ints.ToA(int(src))
 }
 
-func OptionalToA(src *int32, defaultOnNil string) string {
+func OptionalToA(src *int8, defaultOnNil string) string {
 	if src == nil {
 		return defaultOnNil
 	}

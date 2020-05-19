@@ -26,3 +26,10 @@ func ZmillisToString(pTime *time.Time) string {
 func ZmillisNow() string {
 	return ZmillisToString(nil)
 }
+
+func OptionalToA(src *time.Time, defaultOnNil string) string {
+	if src == nil {
+		return defaultOnNil
+	}
+	return ZmillisToString(src)
+}

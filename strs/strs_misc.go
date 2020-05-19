@@ -14,6 +14,14 @@ func ErrorOrDefault(err error, defaultMsg string) string {
 }
 
 //noinspection GoUnusedExportedFunction
+func FromOptional(src *string, defaultValue string) string {
+	if src != nil {
+		return *src
+	}
+	return defaultValue
+}
+
+//noinspection GoUnusedExportedFunction
 func MustStartWithIfNotEmpty(src, prefix string) string {
 	if strings.HasPrefix(src, prefix) {
 		return src
