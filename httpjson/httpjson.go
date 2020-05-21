@@ -22,6 +22,17 @@ type RequestResponse struct {
 	Err          error
 }
 
+func (r *RequestResponse) BadRequest(verb, url, err string) *RequestResponse {
+	rr := r
+	if rr == nil {
+		rr = &RequestResponse{}
+	}
+	rr.Verb = verb
+	rr.URL = url
+	rr.Err = errors.New(err)
+	return rr
+}
+
 func (r *RequestResponse) LikelyParsable() bool {
 	return (r != nil) && // Left to Right!
 		(r.StatusCode == 200) && (len(r.ResponseData) != 0) && (r.Err == nil)
@@ -55,8 +66,8 @@ func (r *RequestResponse) IndentString(prefix string, ib *strs.IndentedBuilder) 
 }
 
 // Get attempts to perform an http GET method with the provided url.
-// It returns the responses status code (or -1 if unavailable),
-// the response data (assumed to be json, but could be empty, e.g. response not available), and
+// It returns the request response which includes the URL used, http Verb & StatusCode (-1 if unavailable),
+// Response Data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
 //noinspection GoUnusedExportedFunction
 func Get(url string) *RequestResponse {
@@ -64,9 +75,9 @@ func Get(url string) *RequestResponse {
 	return handle(url, provider.get, "get")
 }
 
-// Get attempts to perform an http POST method with the provided url and post body (assumes "application/json").
-// It returns the responses status code (or -1 if unavailable),
-// the response data (assumed to be json, but could be empty, e.g. response not available), and
+// Post attempts to perform an http POST method with the provided url and post body (assumes "application/json").
+// It returns the request response which includes the URL used, http Verb & StatusCode (-1 if unavailable),
+// Response Data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
 //noinspection GoUnusedExportedFunction
 func Post(url, postBody string) *RequestResponse {
@@ -74,7 +85,29 @@ func Post(url, postBody string) *RequestResponse {
 	return handle(url, provider.post, "post")
 }
 
+// Delete attempts to perform an http DELETE method with the provided url.
+// It returns the request response which includes the URL used, http Verb & StatusCode (-1 if unavailable),
+// Response Data (assumed to be json, but could be empty, e.g. response not available), and
+// an optional error.
+//noinspection GoUnusedExportedFunction
+func Delete(url string) *RequestResponse {
+	provider := &deleteResponseProvider{}
+	return handle(url, provider.delete, "delete")
+}
+
 type responseProvider func(url string) (*http.Response, error)
+
+type deleteResponseProvider struct {
+}
+
+func (r *deleteResponseProvider) delete(url string) (*http.Response, error) {
+	// Create request
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	return getClient().Do(req)
+}
 
 type getResponseProvider struct {
 }
