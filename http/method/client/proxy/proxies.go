@@ -1,9 +1,10 @@
 package proxy
 
 import (
-	"github.com/litesoft-go/utils/http/method"
 	"io"
 	"net/http"
+
+	"github.com/litesoft-go/utils/http/method"
 )
 
 type BodiedClientFunc func(client *http.Client, url, contentType string, body io.Reader) (resp *http.Response, err error)
