@@ -1,4 +1,4 @@
-package response
+package request
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 )
 
 //noinspection GoUnusedExportedFunction
-func Drain(r *http.Response) {
+func Drain(r *http.Request) {
 	if r != nil {
 		ioutils.DrainReadCloser(r.Body)
 	}
