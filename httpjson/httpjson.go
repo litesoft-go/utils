@@ -9,6 +9,7 @@ import (
 
 	// standard libs only above!
 
+	"github.com/litesoft-go/utils/http/types"
 	"github.com/litesoft-go/utils/strs"
 )
 
@@ -121,7 +122,7 @@ type postResponseProvider struct {
 }
 
 func (r *postResponseProvider) post(url string) (*http.Response, error) {
-	return getClient().Post(url, "application/json", strings.NewReader(r.postBody))
+	return getClient().Post(url, types.JSONcontentType, strings.NewReader(r.postBody))
 }
 
 func getClient() *http.Client {
