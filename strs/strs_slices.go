@@ -1,7 +1,7 @@
-package ints
+package strs
 
 //noinspection GoUnusedExportedFunction
-func FindIn(in int, slice []int) (foundIndexOrMinus1 int) {
+func FindIn(in string, slice []string) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {
 		for i, nodeID := range slice {
 			if nodeID == in {
@@ -13,7 +13,7 @@ func FindIn(in int, slice []int) (foundIndexOrMinus1 int) {
 }
 
 //noinspection GoUnusedExportedFunction
-func AddEntry(in int, sliceIn []int) (sliceOut []int, updated bool) {
+func AddEntry(in string, sliceIn []string) (sliceOut []string, updated bool) {
 	sliceOut = sliceIn
 	index := FindIn(in, sliceOut)
 	if index == -1 {
@@ -24,11 +24,11 @@ func AddEntry(in int, sliceIn []int) (sliceOut []int, updated bool) {
 }
 
 //noinspection GoUnusedExportedFunction
-func RemoveEntry(in int, sliceIn []int) (sliceOut []int, updated bool) {
+func RemoveEntry(in string, sliceIn []string) (sliceOut []string, updated bool) {
 	return RemoveAt(sliceIn, FindIn(in, sliceIn))
 }
 
-func RemoveAt(sliceIn []int, at int) (sliceOut []int, updated bool) {
+func RemoveAt(sliceIn []string, at int) (sliceOut []string, updated bool) {
 	lastIndex := len(sliceIn) - 1
 	if (at < 0) || (lastIndex < at) {
 		sliceOut = sliceIn
@@ -47,11 +47,11 @@ func RemoveAt(sliceIn []int, at int) (sliceOut []int, updated bool) {
 }
 
 //noinspection GoUnusedExportedFunction
-func Copy(src []int) []int {
+func Copy(src []string) []string {
 	if src == nil {
 		return nil
 	}
-	dst := make([]int, len(src))
+	dst := make([]string, len(src))
 	copy(dst, src)
 	return dst
 }

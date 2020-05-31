@@ -45,3 +45,12 @@ func RemoveAt(sliceIn []bool, at int) (sliceOut []bool, updated bool) {
 	}
 	return
 }
+
+func Copy(src []bool) []bool {
+	if src == nil {
+		return nil
+	}
+	dst := make([]bool, len(src))
+	copy(dst, src)
+	return dst
+}

@@ -45,3 +45,13 @@ func RemoveAt(sliceIn []uint, at int) (sliceOut []uint, updated bool) {
 	}
 	return
 }
+
+//noinspection GoUnusedExportedFunction
+func Copy(src []uint) []uint {
+	if src == nil {
+		return nil
+	}
+	dst := make([]uint, len(src))
+	copy(dst, src)
+	return dst
+}
