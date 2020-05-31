@@ -9,7 +9,7 @@ import (
 )
 
 //noinspection GoUnusedExportedFunction
-func Drain(r *http.Request) {
+func Drain(r *http.Response) {
 	if r != nil {
 		ioutils.DrainReadCloser(r.Body)
 	}
