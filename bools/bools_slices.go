@@ -1,5 +1,7 @@
 package bools
 
+import "github.com/litesoft-go/utils/options"
+
 //noinspection GoUnusedExportedFunction
 func FindIn(in bool, slice []bool) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {
@@ -46,6 +48,7 @@ func RemoveAt(sliceIn []bool, at int) (sliceOut []bool, updated bool) {
 	return
 }
 
+//noinspection GoUnusedExportedFunction
 func Copy(src []bool) []bool {
 	if src == nil {
 		return nil
@@ -53,4 +56,13 @@ func Copy(src []bool) []bool {
 	dst := make([]bool, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func AsOptions(src []bool, ifEmpty string) string {
+	collector := options.For(len(src), ifEmpty)
+	for _, v := range src {
+		collector.Add(ToA(v))
+	}
+	return collector.Done()
 }

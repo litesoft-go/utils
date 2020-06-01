@@ -1,5 +1,7 @@
 package uint16s
 
+import "github.com/litesoft-go/utils/options"
+
 //noinspection GoUnusedExportedFunction
 func FindIn(in uint16, slice []uint16) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {
@@ -54,4 +56,13 @@ func Copy(src []uint16) []uint16 {
 	dst := make([]uint16, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func AsOptions(src []uint16, ifEmpty string) string {
+	collector := options.For(len(src), ifEmpty)
+	for _, v := range src {
+		collector.Add(ToA(v))
+	}
+	return collector.Done()
 }

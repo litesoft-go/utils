@@ -1,5 +1,7 @@
 package int8s
 
+import "github.com/litesoft-go/utils/options"
+
 //noinspection GoUnusedExportedFunction
 func FindIn(in int8, slice []int8) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {
@@ -54,4 +56,13 @@ func Copy(src []int8) []int8 {
 	dst := make([]int8, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func AsOptions(src []int8, ifEmpty string) string {
+	collector := options.For(len(src), ifEmpty)
+	for _, v := range src {
+		collector.Add(ToA(v))
+	}
+	return collector.Done()
 }

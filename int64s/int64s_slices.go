@@ -1,5 +1,7 @@
 package int64s
 
+import "github.com/litesoft-go/utils/options"
+
 //noinspection GoUnusedExportedFunction
 func FindIn(in int64, slice []int64) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {
@@ -54,4 +56,13 @@ func Copy(src []int64) []int64 {
 	dst := make([]int64, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func AsOptions(src []int64, ifEmpty string) string {
+	collector := options.For(len(src), ifEmpty)
+	for _, v := range src {
+		collector.Add(ToA(v))
+	}
+	return collector.Done()
 }
