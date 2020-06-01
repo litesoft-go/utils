@@ -29,28 +29,40 @@ var timingsByName = struct {
 	m map[string]*Timing
 }{m: make(map[string]*Timing)}
 
-func GetNamedTimeout(name string, defaultTimeoutSeconds int) *Timing {
+func SetNamedTiming(name string, timing *Timing) *Timing {
+	timingsByName.Lock()
+	if timing == nil {
+		delete(timingsByName.m, name)
+	} else {
+		timingsByName.m[name] = timing
+	}
+	timingsByName.Unlock()
+	return timing
+}
+
+func SetNamedTimeout(name string, timeoutSeconds int) *Timing {
+	return SetNamedTiming(name, timingByTimeout(timeoutSeconds))
+}
+
+func getNamed(name string) *Timing {
 	timingsByName.RLock()
 	timing := timingsByName.m[name]
 	timingsByName.RUnlock()
+	return timing
+}
+
+func GetNamedTimeout(name string, defaultTimeoutSeconds int) *Timing {
+	timing := getNamed(name)
 	if timing == nil {
-		timing = timingByTimeout(defaultTimeoutSeconds)
-		timingsByName.Lock()
-		timingsByName.m[name] = timing
-		timingsByName.Unlock()
+		timing = SetNamedTimeout(name, defaultTimeoutSeconds)
 	}
 	return timing
 }
 
 func GetNamedTiming(name string, defaultTiming *Timing) (timing *Timing) {
-	timingsByName.RLock()
-	timing = timingsByName.m[name]
-	timingsByName.RUnlock()
+	timing = getNamed(name)
 	if (timing == nil) && (defaultTiming != nil) {
-		timing = defaultTiming
-		timingsByName.Lock()
-		timingsByName.m[name] = timing
-		timingsByName.Unlock()
+		timing = SetNamedTiming(name, defaultTiming)
 	}
 	return
 }
