@@ -1,36 +1,33 @@
 package httpconfig
 
 import (
-	"net"
-	"net/http"
 	"strconv"
 	"time"
 	// standard libs only above!
 )
 
-//noinspection GoUnusedExportedFunction
-func NewClient(timeoutSeconds int) *http.Client {
-	if timeoutSeconds < 1 {
-		panic("Attempt to create a New http.Client with timeouts of: " + strconv.Itoa(timeoutSeconds))
-	}
-	dialerTimeout := duration(timeoutSeconds)
-	dialerKeepAlive := duration(timeoutSeconds)
-	tLSHandshakeTimeout := duration(timeoutSeconds)
-	endlessRedirectsMaxTime := duration(2 * timeoutSeconds)
-	expectContinueTimeout := fractionalDuration(0.4, timeoutSeconds)
-	responseHeaderTimeout := fractionalDuration(0.3, timeoutSeconds)
+type Timing struct {
+	DialerTimeout           time.Duration
+	DialerKeepAlive         time.Duration
+	TLSHandshakeTimeout     time.Duration
+	EndlessRedirectsMaxTime time.Duration
+	ExpectContinueTimeout   time.Duration
+	ResponseHeaderTimeout   time.Duration
+}
 
-	return &http.Client{
-		Timeout: endlessRedirectsMaxTime,
-		Transport: &http.Transport{
-			TLSHandshakeTimeout:   tLSHandshakeTimeout,
-			ExpectContinueTimeout: expectContinueTimeout,
-			ResponseHeaderTimeout: responseHeaderTimeout,
-			DialContext: (&net.Dialer{
-				Timeout:   dialerTimeout,
-				KeepAlive: dialerKeepAlive,
-			}).DialContext,
-		},
+//noinspection GoUnusedExportedFunction
+func NewTiming(timeoutSeconds int) *Timing {
+	if timeoutSeconds < 1 {
+		panic("Attempt to create a New httpconfig.Timing with timeouts of: " + strconv.Itoa(timeoutSeconds))
+	}
+
+	return &Timing{
+		DialerTimeout:           duration(timeoutSeconds),
+		DialerKeepAlive:         duration(timeoutSeconds),
+		TLSHandshakeTimeout:     duration(timeoutSeconds),
+		EndlessRedirectsMaxTime: duration(2 * timeoutSeconds),
+		ExpectContinueTimeout:   fractionalDuration(0.4, timeoutSeconds),
+		ResponseHeaderTimeout:   fractionalDuration(0.3, timeoutSeconds),
 	}
 }
 

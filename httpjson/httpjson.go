@@ -13,8 +13,6 @@ import (
 	"github.com/litesoft-go/utils/strs"
 )
 
-var Client *http.Client
-
 type RequestResponse struct {
 	Verb         string
 	URL          string
@@ -71,8 +69,9 @@ func (r *RequestResponse) IndentString(prefix string, ib *strs.IndentedBuilder) 
 // Response Data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
 //noinspection GoUnusedExportedFunction
-func Get(url string) *RequestResponse {
+func Get(client *http.Client, url string) *RequestResponse {
 	provider := &getResponseProvider{}
+	provider.client = client
 	return handle(url, provider.get, "get")
 }
 
@@ -81,8 +80,9 @@ func Get(url string) *RequestResponse {
 // Response Data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
 //noinspection GoUnusedExportedFunction
-func Post(url, postBody string) *RequestResponse {
+func Post(client *http.Client, url, postBody string) *RequestResponse {
 	provider := &postResponseProvider{postBody: postBody}
+	provider.client = client
 	return handle(url, provider.post, "post")
 }
 
@@ -91,14 +91,20 @@ func Post(url, postBody string) *RequestResponse {
 // Response Data (assumed to be json, but could be empty, e.g. response not available), and
 // an optional error.
 //noinspection GoUnusedExportedFunction
-func Delete(url string) *RequestResponse {
+func Delete(client *http.Client, url string) *RequestResponse {
 	provider := &deleteResponseProvider{}
+	provider.client = client
 	return handle(url, provider.delete, "delete")
+}
+
+type abstractResponseProvider struct {
+	client *http.Client
 }
 
 type responseProvider func(url string) (*http.Response, error)
 
 type deleteResponseProvider struct {
+	abstractResponseProvider
 }
 
 func (r *deleteResponseProvider) delete(url string) (*http.Response, error) {
@@ -107,28 +113,33 @@ func (r *deleteResponseProvider) delete(url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return getClient().Do(req)
+	return getClient(&r.abstractResponseProvider).Do(req)
 }
 
 type getResponseProvider struct {
+	abstractResponseProvider
 }
 
 func (r *getResponseProvider) get(url string) (*http.Response, error) {
-	return getClient().Get(url)
+	return getClient(&r.abstractResponseProvider).Get(url)
 }
 
 type postResponseProvider struct {
+	abstractResponseProvider
 	postBody string
 }
 
 func (r *postResponseProvider) post(url string) (*http.Response, error) {
-	return getClient().Post(url, types.JSONcontentType, strings.NewReader(r.postBody))
+	return getClient(&r.abstractResponseProvider).Post(url,
+		types.JSONcontentType, strings.NewReader(r.postBody))
 }
 
-func getClient() *http.Client {
-	client := Client
-	if client != nil {
-		return client
+func getClient(arp *abstractResponseProvider) *http.Client {
+	if arp != nil {
+		client := arp.client
+		if client != nil {
+			return client
+		}
 	}
 	return http.DefaultClient
 }
