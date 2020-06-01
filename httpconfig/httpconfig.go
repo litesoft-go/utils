@@ -7,6 +7,7 @@ import (
 )
 
 type Timing struct {
+	fromTimeoutSeconds      int
 	DialerTimeout           time.Duration
 	DialerKeepAlive         time.Duration
 	TLSHandshakeTimeout     time.Duration
@@ -22,6 +23,7 @@ func NewTiming(timeoutSeconds int) *Timing {
 	}
 
 	return &Timing{
+		fromTimeoutSeconds:      timeoutSeconds,
 		DialerTimeout:           duration(timeoutSeconds),
 		DialerKeepAlive:         duration(timeoutSeconds),
 		TLSHandshakeTimeout:     duration(timeoutSeconds),
