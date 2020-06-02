@@ -33,6 +33,14 @@ func NewTiming(timeoutSeconds int) *Timing {
 	}
 }
 
+//noinspection GoUnusedExportedFunction
+func (in *Timing) IsBasedOn(timeoutSeconds int) bool {
+	if in != nil {
+		return timeoutSeconds == in.fromTimeoutSeconds
+	}
+	return false
+}
+
 func duration(timeoutSeconds int) time.Duration {
 	return time.Duration(timeoutSeconds) * time.Second
 }

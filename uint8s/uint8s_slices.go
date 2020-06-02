@@ -1,6 +1,12 @@
 package uint8s
 
-import "github.com/litesoft-go/utils/options"
+import (
+	"sort"
+
+	// standard libs only above!
+
+	"github.com/litesoft-go/utils/options"
+)
 
 //noinspection GoUnusedExportedFunction
 func FindIn(in uint8, slice []uint8) (foundIndexOrMinus1 int) {
@@ -56,6 +62,31 @@ func Copy(src []uint8) []uint8 {
 	dst := make([]uint8, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func SortStable(src []uint8) (out []uint8) {
+	out = Copy(src)
+	sort.SliceStable(out, func(i, j int) bool {
+		return out[i] < out[j]
+	})
+	return
+}
+
+//noinspection GoUnusedExportedFunction
+func SlicesEqual(in1, in2 []uint8) bool {
+	l1, l2 := len(in1), len(in2)
+	if l1 != l2 {
+		return false
+	}
+	if &in1 != &in2 {
+		for i := range in1 {
+			if in1[i] != in2[i] {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 //noinspection GoUnusedExportedFunction

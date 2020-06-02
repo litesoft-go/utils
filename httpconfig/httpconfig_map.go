@@ -68,14 +68,6 @@ func GetNamedTiming(name string, defaultTiming *Timing) (timing *Timing) {
 }
 
 //noinspection GoUnusedExportedFunction
-func IsTimingTimeoutOf(timing *Timing, timeoutSeconds int) bool {
-	if timing != nil {
-		return timeoutSeconds == timing.fromTimeoutSeconds
-	}
-	return false
-}
-
-//noinspection GoUnusedExportedFunction
 func ClientByNameWithDefaultTiming(name string, defaultTiming *Timing) *http.Client {
 	return ClientByTiming(GetNamedTiming(name, defaultTiming))
 }

@@ -1,6 +1,12 @@
 package ints
 
-import "github.com/litesoft-go/utils/options"
+import (
+	"sort"
+
+	// standard libs only above!
+
+	"github.com/litesoft-go/utils/options"
+)
 
 //noinspection GoUnusedExportedFunction
 func FindIn(in int, slice []int) (foundIndexOrMinus1 int) {
@@ -56,6 +62,31 @@ func Copy(src []int) []int {
 	dst := make([]int, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func SortStable(src []int) (out []int) {
+	out = Copy(src)
+	sort.SliceStable(out, func(i, j int) bool {
+		return out[i] < out[j]
+	})
+	return
+}
+
+//noinspection GoUnusedExportedFunction
+func SlicesEqual(in1, in2 []int) bool {
+	l1, l2 := len(in1), len(in2)
+	if l1 != l2 {
+		return false
+	}
+	if &in1 != &in2 {
+		for i := range in1 {
+			if in1[i] != in2[i] {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 //noinspection GoUnusedExportedFunction

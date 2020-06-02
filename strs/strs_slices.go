@@ -1,6 +1,12 @@
 package strs
 
-import "github.com/litesoft-go/utils/options"
+import (
+	"sort"
+
+	// standard libs only above!
+
+	"github.com/litesoft-go/utils/options"
+)
 
 //noinspection GoUnusedExportedFunction
 func FindIn(in string, slice []string) (foundIndexOrMinus1 int) {
@@ -56,6 +62,31 @@ func Copy(src []string) []string {
 	dst := make([]string, len(src))
 	copy(dst, src)
 	return dst
+}
+
+//noinspection GoUnusedExportedFunction
+func SortStable(src []string) (out []string) {
+	out = Copy(src)
+	sort.SliceStable(out, func(i, j int) bool {
+		return out[i] < out[j]
+	})
+	return
+}
+
+//noinspection GoUnusedExportedFunction
+func SlicesEqual(in1, in2 []string) bool {
+	l1, l2 := len(in1), len(in2)
+	if l1 != l2 {
+		return false
+	}
+	if &in1 != &in2 {
+		for i := range in1 {
+			if in1[i] != in2[i] {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 //noinspection GoUnusedExportedFunction

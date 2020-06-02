@@ -1,6 +1,8 @@
 package bools
 
-import "github.com/litesoft-go/utils/options"
+import (
+	"github.com/litesoft-go/utils/options"
+)
 
 //noinspection GoUnusedExportedFunction
 func FindIn(in bool, slice []bool) (foundIndexOrMinus1 int) {
@@ -56,6 +58,31 @@ func Copy(src []bool) []bool {
 	dst := make([]bool, len(src))
 	copy(dst, src)
 	return dst
+}
+
+////noinspection GoUnusedExportedFunction
+//func SortStable(src []bool) (out []bool) {
+//	out = Copy(src)
+//	sort.SliceStable(out, func(i, j int) bool {
+//		return out[i] < out[j]
+//	})
+//	return
+//}
+
+//noinspection GoUnusedExportedFunction
+func SlicesEqual(in1, in2 []bool) bool {
+	l1, l2 := len(in1), len(in2)
+	if l1 != l2 {
+		return false
+	}
+	if &in1 != &in2 {
+		for i := range in1 {
+			if in1[i] != in2[i] {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 //noinspection GoUnusedExportedFunction
