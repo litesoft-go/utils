@@ -1,5 +1,12 @@
 package maps
 
+var zeroValue map[string]string
+
+//noinspection GoUnusedExportedFunction
+func ZeroValue() map[string]string {
+	return zeroValue
+}
+
 func NewStrings(initialCapacity int) map[string]string {
 	return make(map[string]string, initialCapacity)
 }

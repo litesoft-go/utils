@@ -8,6 +8,13 @@ import (
 	"github.com/litesoft-go/utils/options"
 )
 
+var zeroValue []string
+
+//noinspection GoUnusedExportedFunction
+func ZeroValue() []string {
+	return zeroValue
+}
+
 //noinspection GoUnusedExportedFunction
 func FindIn(in string, slice []string) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {

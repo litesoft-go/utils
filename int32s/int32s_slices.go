@@ -8,6 +8,13 @@ import (
 	"github.com/litesoft-go/utils/options"
 )
 
+var zeroValue []int32
+
+//noinspection GoUnusedExportedFunction
+func ZeroValue() []int32 {
+	return zeroValue
+}
+
 //noinspection GoUnusedExportedFunction
 func FindIn(in int32, slice []int32) (foundIndexOrMinus1 int) {
 	if len(slice) != 0 {
