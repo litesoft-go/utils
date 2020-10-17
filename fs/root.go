@@ -124,11 +124,11 @@ func (in File) WithName(name string) File {
 }
 
 func (in File) CopyTo(out File) error {
-	srcPath, err := in.check()
+	srcPath, err := in.check() // path always returned
 	if err != nil {
 		return err
 	}
-	dstPath, err := out.check()
+	dstPath, err := out.check() // path always returned
 	if (err != nil) && !os.IsNotExist(err) {
 		return err
 	}
@@ -151,7 +151,17 @@ func (in File) CopyTo(out File) error {
 }
 
 func (in File) Rename(out File) error {
-	return os.Rename(in.AsPathString(), out.AsPathString())
+	srcPath, err := in.check() // path always returned
+	if err != nil {
+		return err
+	}
+	dstPath, err := out.check() // path always returned
+	if err == nil {
+		err = os.Remove(dstPath)
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	return os.Rename(srcPath, dstPath)
 }
 
 func (in File) Delete() error {

@@ -20,7 +20,7 @@ func main() {
 		os.Exit(1)
 	}
 	name := cleanAppName(os.Args[0])
-	fmt.Println(name, " vs 1.0 ", iso8601.ZmillisNow())
+	fmt.Println(name, " vs 1.2 ", iso8601.ZmillisNow())
 
 	configFile, err := os.Open(name + ".conf")
 	if err != nil {
@@ -88,6 +88,9 @@ func main() {
 		time.Sleep(*loopAfterDuration)
 		err = zMover.MoveFiles()
 	}
+
+	fmt.Println()
+	fmt.Println()
 	panic(err)
 }
 
