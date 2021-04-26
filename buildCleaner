@@ -1,0 +1,1 @@
+go build -o appcleaner/cleaner appcleaner/main/cleaner.go

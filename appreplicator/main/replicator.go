@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/litesoft-go/utils/archiver/mover"
+	"github.com/litesoft-go/utils/appreplicator/copier"
 	"github.com/litesoft-go/utils/fs"
 	"github.com/litesoft-go/utils/iso8601"
 	"github.com/litesoft-go/utils/simpleconf"
 	"github.com/litesoft-go/utils/strs"
 	"os"
 	"strings"
-	"time"
 )
 
 // Main function
@@ -20,17 +19,13 @@ func main() {
 		os.Exit(1)
 	}
 	name := cleanAppName(os.Args[0])
-	fmt.Println(name, " vs 1.2 ", iso8601.ZmillisNow())
+	fmt.Println(name, " vs 1.0 ", iso8601.ZmillisNow())
 
 	configFile, err := os.Open(name + ".conf")
 	if err != nil {
 		panic(err)
 	}
 	config, err := simpleconf.Load(configFile)
-	if err != nil {
-		panic(err)
-	}
-	loopAfter, err := config.ValueOf("loopAfter")
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +49,6 @@ func main() {
 		fmt.Println("*** Warning ***: '.tmp' not in 'ignoreExtensions'; this may cause problems")
 	}
 	fmt.Println("  config:")
-	fmt.Println("              loopAfter: ", loopAfter)
 	fmt.Println("         sources (dirs): ", srcDirs)
 	fmt.Println("    destinations (dirs): ", dstDirs)
 	fmt.Println("       ignoreExtensions: ", ignoreExtensions)
@@ -67,45 +61,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	loopAfterDuration, err := durationFor("loopAfter", loopAfter)
+
+	fmt.Println()
+	fmt.Println("  Note: files beginning with '_try_' are temporary destination Dir files!")
+	fmt.Println()
+
+	zMover := copier.NewCopier(srcFSs, dstFSs, ignoreExtensions)
+
+	err = zMover.CopyFiles()
+
+	fmt.Println()
+	fmt.Println()
+
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println()
-	fmt.Println("  Note: files beginning with '_try__' and more '-'s, are temporary")
-	fmt.Println("        destination Dir files.  As such the shortest file name that")
-	fmt.Println("         can be transferred is 6 characters long!")
-	fmt.Println()
-
-	zMover := mover.NewMover(srcFSs, dstFSs, ignoreExtensions)
-
-	err = zMover.MoveFiles()
-	for err == nil {
-		if loopAfterDuration == nil {
-			os.Exit(0)
-		}
-		time.Sleep(*loopAfterDuration)
-		err = zMover.MoveFiles()
-	}
-
-	fmt.Println()
-	fmt.Println()
-	panic(err)
-}
-
-func durationFor(what, durationStr string) (duration *time.Duration, err error) {
-	if durationStr == "" {
-		return
-	}
-	var d time.Duration
-	d, err = time.ParseDuration(durationStr)
-	if err != nil {
-		err = fmt.Errorf("'%s': %w", what, err)
-	} else {
-		duration = &d
-	}
-	return
 }
 
 func fileSystemsFor(what string, dirs []string) (fileSystems []*fs.FS, err error) {

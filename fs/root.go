@@ -42,6 +42,33 @@ func (in Directory) AsPathString() string {
 	return in.fs.root + in.path.String()
 }
 
+func (in Directory) Path() string {
+	return in.path.String()
+}
+
+func (in Directory) IsEquivalent(ni Directory) bool {
+	return in.Path() == ni.Path()
+}
+
+func (in Directory) IsLess(ni Directory) bool {
+	return in.Path() < ni.Path()
+}
+
+func (in *Directory) AsOrderable() *string {
+	if in == nil {
+		return nil
+	}
+	path := in.Path()
+	return &path
+}
+
+func FirstDirectory(dirs []Directory) *Directory {
+	if len(dirs) == 0 {
+		return nil
+	}
+	return &dirs[0]
+}
+
 type File struct {
 	fs   *FS
 	path *Path
@@ -56,12 +83,39 @@ func (in File) AsPathString() string {
 	return in.AsParentPathString() + "/" + in.name
 }
 
+func (in File) Path() string {
+	return in.path.String() + "/" + in.name
+}
+
 func (in File) AsParentPathString() string {
 	return in.fs.root + in.path.String()
 }
 
 func (in File) Name() string {
 	return in.name
+}
+
+func (in File) IsEquivalent(ni File) bool {
+	return in.Path() == ni.Path()
+}
+
+func (in File) IsLess(ni File) bool {
+	return in.Path() < ni.Path()
+}
+
+func (in *File) AsOrderable() *string {
+	if in == nil {
+		return nil
+	}
+	path := in.Path()
+	return &path
+}
+
+func FirstFile(files []File) *File {
+	if len(files) == 0 {
+		return nil
+	}
+	return &files[0]
 }
 
 type Other struct {
@@ -123,12 +177,22 @@ func (in File) WithName(name string) File {
 	return File{fs: in.fs, path: in.path, name: name}
 }
 
+func (in File) Exists() (exists bool, err error) {
+	_, _, err = in.check() // path always returned
+	if err == nil {
+		exists = true
+	} else if os.IsNotExist(err) {
+		err = nil
+	}
+	return
+}
+
 func (in File) CopyTo(out File) error {
-	srcPath, err := in.check() // path always returned
+	srcPath, _, err := in.check() // path always returned
 	if err != nil {
 		return err
 	}
-	dstPath, err := out.check() // path always returned
+	dstPath, _, err := out.check() // path always returned
 	if (err != nil) && !os.IsNotExist(err) {
 		return err
 	}
@@ -151,11 +215,11 @@ func (in File) CopyTo(out File) error {
 }
 
 func (in File) Rename(out File) error {
-	srcPath, err := in.check() // path always returned
+	srcPath, _, err := in.check() // path always returned
 	if err != nil {
 		return err
 	}
-	dstPath, err := out.check() // path always returned
+	dstPath, _, err := out.check() // path always returned
 	if err == nil {
 		err = os.Remove(dstPath)
 	} else if !os.IsNotExist(err) {
@@ -168,9 +232,26 @@ func (in File) Delete() error {
 	return os.Remove(in.AsPathString())
 }
 
-func (in File) check() (path string, err error) {
-	path = in.AsPathString()
+func (in File) IsEmpty() (empty bool, err error) {
+	var size int64
+	size, err = in.Size()
+	if err == nil {
+		empty = size == 0
+	}
+	return
+}
+
+func (in File) Size() (size int64, err error) {
 	var info os.FileInfo
+	_, info, err = in.check()
+	if err == nil {
+		size = info.Size()
+	}
+	return
+}
+
+func (in File) check() (path string, info os.FileInfo, err error) {
+	path = in.AsPathString()
 	info, err = os.Stat(path)
 	if err == nil {
 		if !info.Mode().IsRegular() {

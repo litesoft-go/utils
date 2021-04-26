@@ -41,7 +41,7 @@ func (in *Mover) moveSrcDir(srcDir fs.Directory) error {
 	for _, file := range files {
 		err = in.moveSrcFile(file)
 		if err != nil {
-			fmt.Print("\n        ", err)
+			fmt.Println("\n        ", err)
 			in.skippedFiles = append(in.skippedFiles, file.AsPathString())
 		}
 	}

@@ -1,0 +1,1 @@
+go build -o appcomparer/comparer appcomparer/main/comparer.go
