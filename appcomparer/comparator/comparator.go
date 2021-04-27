@@ -50,6 +50,7 @@ func (in *Comparator) compareDirs(dir1, dir2 fs.Directory) {
 		dir1 := fs.FirstDirectory(dirs1)
 		dir2 := fs.FirstDirectory(dirs2)
 		pick := picker.Which(dir1, dir2)
+		// fmt.Println("***  dirs ", pick.Name(), " 1:", dir1, " | ", dir2, ":2")
 		switch pick {
 		case picker.Done:
 			return
@@ -74,6 +75,7 @@ func (in *Comparator) compareFiles(files1, files2 []fs.File) (f1, f2 []fs.File) 
 		file1 := fs.FirstFile(files1)
 		file2 := fs.FirstFile(files2)
 		pick := picker.Which(file1, file2)
+		// fmt.Println("*** files ", pick.Name(), " 1:", file1, " | ", file2, ":2")
 		switch pick {
 		case picker.Done:
 			return
@@ -188,6 +190,8 @@ func sameContents(file1, file2 fs.File) bool {
 	count1, bytes1 := f1.read()
 	count2, bytes2 := f2.read()
 	for (0 <= count1) && (0 <= count2) { // -1 == Error
+		// fmt.Println("*** same ", f1.fsFile, " 1:", count1, " | ", count2, ":2 ", f2.fsFile)
+
 		if count2 < count1 {
 			count1 = count2
 		}
@@ -235,8 +239,7 @@ func (in *FileReadBlockStream) Close() error {
 
 // count == -1 -> Error
 func (in *FileReadBlockStream) read() (count int, available []byte) {
-	count = in.bufBytes - in.offset
-	for 0 <= count {
+	for count = in.bufBytes - in.offset; 0 <= count; count = in.bufBytes - in.offset {
 		if count != 0 {
 			available = in.buf[in.offset:]
 			return

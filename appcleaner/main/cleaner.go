@@ -11,40 +11,20 @@ import (
 
 // Main function
 func main() {
-	argsWithProg := os.Args
-	if len(argsWithProg) > 1 {
-		fmt.Println("No CLI parameters supported, but got: ", argsWithProg)
-		os.Exit(1)
-	}
 	name := cleanAppName(os.Args[0])
-	fmt.Println(name, " vs 1.0 ", iso8601.ZmillisNow())
+	fmt.Println(name, " vs 1.1 ", iso8601.ZmillisNow())
 
-	configFile, err := os.Open(name + ".conf")
-	if err != nil {
-		panic(err)
-	}
-	config, err := simpleconf.Load(configFile)
-	if err != nil {
-		panic(err)
-	}
-	srcDirs := config.ValuesFor("sources")
-	if len(srcDirs) == 0 {
-		panic("no 'sources' specified")
-	}
-	extensions := config.ValuesFor("extensions")
-	for i, ext := range extensions {
-		if !strings.HasPrefix(ext, ".") {
-			extensions[i] = "." + ext
-		} else if ext == "." {
-			panic("'extensions' contained just a dot '.'")
-		}
-	}
+	args := simpleconf.WithArgs(os.Args)
+	config := simpleconf.Adapter(args.Load(simpleconf.LoadFile(name + ".conf")))
+	srcDirs := config.ValuesForRequired("sources")
+	extensions := checkExtensions(config.ValuesForOptional("extensions"))
+	args.CheckNoMoreArgs()
 	fmt.Println("  config:")
 	fmt.Println("         sources (dirs): ", srcDirs)
 	fmt.Println("             extensions: ", extensions)
 
 	// srcFSs, err := fileSystemsFor("sources", srcDirs)
-	_, err = fileSystemsFor("sources", srcDirs)
+	_, err := fileSystemsFor("sources", srcDirs)
 	if err != nil {
 		panic(err)
 	}
@@ -65,6 +45,17 @@ func main() {
 	fmt.Println()
 	fmt.Println()
 	panic(err)
+}
+
+func checkExtensions(extensions []string) []string {
+	for i, ext := range extensions {
+		if !strings.HasPrefix(ext, ".") {
+			extensions[i] = "." + ext
+		} else if ext == "." {
+			panic("'ignoreExtensions' contained just a dot '.'")
+		}
+	}
+	return extensions
 }
 
 func fileSystemsFor(what string, dirs []string) (fileSystems []*fs.FS, err error) {

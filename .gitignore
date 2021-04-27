@@ -16,3 +16,7 @@
 
 /.idea/
 .DS_Store
+/appcomparer/comparer
+/appreplicator/replicator
+/apparchiver/archiver
+/appcleaner/cleaner

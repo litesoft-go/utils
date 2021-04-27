@@ -5,43 +5,56 @@ import (
 	"fmt"
 	"github.com/litesoft-go/utils/interfaces"
 	"github.com/litesoft-go/utils/ioutils"
+	"os"
 	"strings"
 	"unicode"
 
 	"io"
 )
 
-type Config struct {
+type ConfigMap struct {
 	keyValues map[string][]string
 }
 
-func (in *Config) ValueOf(key string) (value string, err error) {
-	values := in.ValuesFor(key)
-	switch len(values) {
+func (in *ConfigMap) ValuesFor(key string) []string {
+	return in.keyValues[key]
+}
+
+func (in *ConfigMap) ValueOf(key string) (value string, err error) {
+	return in.ExtractValueOf(key, in.ValuesFor(key))
+}
+
+func (in *ConfigMap) ExtractValueOf(key string, from []string) (value string, err error) {
+	switch len(from) {
 	case 0:
 		return
 	case 1:
-		value = values[0]
+		value = from[0]
 	default:
 		err = fmt.Errorf("multiple values for '%s', use ValuesFor", key)
 	}
 	return
 }
 
-func (in *Config) ValuesFor(key string) []string {
-	return in.keyValues[key]
-}
-
 //noinspection GoUnusedExportedFunction
-func Load(readerCloser io.ReadCloser) (simpleConf *Config, err error) {
-	if !interfaces.IsNil(readerCloser) {
-		defer ioutils.Close(readerCloser)
-		simpleConf, err = LoadReader(readerCloser)
+func LoadFile(filePath string) (config Config, err error) {
+	var readerCloser io.ReadCloser
+	readerCloser, err = os.Open(filePath)
+	if err == nil {
+		config, err = Load(readerCloser)
 	}
 	return
 }
 
-func LoadReader(reader io.Reader) (simpleConf *Config, err error) {
+func Load(readerCloser io.ReadCloser) (config Config, err error) {
+	if !interfaces.IsNil(readerCloser) {
+		defer ioutils.Close(readerCloser)
+		config, err = LoadReader(readerCloser)
+	}
+	return
+}
+
+func LoadReader(reader io.Reader) (config *ConfigMap, err error) {
 	collector := Collector{keyValues: make(map[string][]string)}
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
@@ -55,7 +68,7 @@ func LoadReader(reader io.Reader) (simpleConf *Config, err error) {
 	if err == nil {
 		err = collector.addList()
 		if err == nil {
-			simpleConf = &Config{keyValues: collector.keyValues}
+			config = &ConfigMap{keyValues: collector.keyValues}
 		}
 	}
 	return

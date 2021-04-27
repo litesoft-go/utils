@@ -14,45 +14,16 @@ import (
 
 // Main function
 func main() {
-	argsWithProg := os.Args
-	if len(argsWithProg) > 1 {
-		fmt.Println("No CLI parameters supported, but got: ", argsWithProg)
-		os.Exit(1)
-	}
 	name := cleanAppName(os.Args[0])
-	fmt.Println(name, " vs 1.2 ", iso8601.ZmillisNow())
+	fmt.Println(name, " vs 1.3 ", iso8601.ZmillisNow())
 
-	configFile, err := os.Open(name + ".conf")
-	if err != nil {
-		panic(err)
-	}
-	config, err := simpleconf.Load(configFile)
-	if err != nil {
-		panic(err)
-	}
-	loopAfter, err := config.ValueOf("loopAfter")
-	if err != nil {
-		panic(err)
-	}
-	srcDirs := config.ValuesFor("sources")
-	if len(srcDirs) == 0 {
-		panic("no 'sources' specified")
-	}
-	dstDirs := config.ValuesFor("destinations")
-	if len(dstDirs) == 0 {
-		panic("no 'destinations' specified")
-	}
-	ignoreExtensions := config.ValuesFor("ignoreExtensions")
-	for i, ext := range ignoreExtensions {
-		if !strings.HasPrefix(ext, ".") {
-			ignoreExtensions[i] = "." + ext
-		} else if ext == "." {
-			panic("'ignoreExtensions' contained just a dot '.'")
-		}
-	}
-	if -1 == strs.FindIn(".tmp", ignoreExtensions) {
-		fmt.Println("*** Warning ***: '.tmp' not in 'ignoreExtensions'; this may cause problems")
-	}
+	args := simpleconf.WithArgs(os.Args)
+	config := simpleconf.Adapter(args.Load(simpleconf.LoadFile(name + ".conf")))
+	loopAfter := config.ValueOfOptional("loopAfter")
+	srcDirs := config.ValuesForRequired("sources")
+	dstDirs := config.ValuesForRequired("destinations")
+	ignoreExtensions := checkExtensions(config.ValuesForOptional("ignoreExtensions"))
+	args.CheckNoMoreArgs()
 	fmt.Println("  config:")
 	fmt.Println("              loopAfter: ", loopAfter)
 	fmt.Println("         sources (dirs): ", srcDirs)
@@ -92,6 +63,20 @@ func main() {
 	fmt.Println()
 	fmt.Println()
 	panic(err)
+}
+
+func checkExtensions(extensions []string) []string {
+	for i, ext := range extensions {
+		if !strings.HasPrefix(ext, ".") {
+			extensions[i] = "." + ext
+		} else if ext == "." {
+			panic("'ignoreExtensions' contained just a dot '.'")
+		}
+	}
+	if -1 == strs.FindIn(".tmp", extensions) {
+		fmt.Println("*** Warning ***: '.tmp' not in 'ignoreExtensions'; this may cause problems")
+	}
+	return extensions
 }
 
 func durationFor(what, durationStr string) (duration *time.Duration, err error) {

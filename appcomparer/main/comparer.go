@@ -12,39 +12,16 @@ import (
 
 // Main function
 func main() {
-	argsWithProg := os.Args
-	if len(argsWithProg) > 1 {
-		fmt.Println("No CLI parameters supported, but got: ", argsWithProg)
-		os.Exit(1)
-	}
 	name := cleanAppName(os.Args[0])
-	fmt.Println(name, " vs 1.0 ", iso8601.ZmillisNow())
+	fmt.Println(name, " vs 1.1 ", iso8601.ZmillisNow())
 
-	configFile, err := os.Open(name + ".conf")
-	if err != nil {
-		panic(err)
-	}
-	config, err := simpleconf.Load(configFile)
-	if err != nil {
-		panic(err)
-	}
-	dir1, err := config.ValueOf("dir1")
-	if err != nil {
-		panic(err)
-	}
-	dir2, err := config.ValueOf("dir2")
-	if err != nil {
-		panic(err)
-	}
-	ignoreDirs := config.ValuesFor("ignoreDirs")
-	ignoreExtensions := config.ValuesFor("ignoreExtensions")
-	for i, ext := range ignoreExtensions {
-		if !strings.HasPrefix(ext, ".") {
-			ignoreExtensions[i] = "." + ext
-		} else if ext == "." {
-			panic("'extensions' contained just a dot '.'")
-		}
-	}
+	args := simpleconf.WithArgs(os.Args)
+	config := simpleconf.Adapter(args.Load(simpleconf.LoadFile(name + ".conf")))
+	dir1 := config.ValueOfRequired("dir1")
+	dir2 := config.ValueOfRequired("dir2")
+	ignoreDirs := config.ValuesForOptional("ignoreDirs")
+	ignoreExtensions := checkExtensions(config.ValuesForOptional("ignoreExtensions"))
+	args.CheckNoMoreArgs()
 	fmt.Println("  config:")
 	fmt.Println("         dir1: ", dir1)
 	fmt.Println("         dir2: ", dir2)
@@ -68,6 +45,17 @@ func main() {
 
 	fmt.Println()
 	fmt.Println("Done...")
+}
+
+func checkExtensions(extensions []string) []string {
+	for i, ext := range extensions {
+		if !strings.HasPrefix(ext, ".") {
+			extensions[i] = "." + ext
+		} else if ext == "." {
+			panic("'ignoreExtensions' contained just a dot '.'")
+		}
+	}
+	return extensions
 }
 
 func fileSystemFor(what string, dir string) (fileSystem *fs.FS, err error) {
